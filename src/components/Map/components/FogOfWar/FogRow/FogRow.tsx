@@ -8,12 +8,13 @@ const FogRow: FC<FogRowProps> = ({
   onClick,
   guesses,
   treasureCoords,
-  guessAvailable
+  remainingTreasureCoords,
+  guessEnabled
 }: FogRowProps): ReactElement => {
   const squaresPerRow: number[] = [1, 2, 3, 4, 5, 6, 7, 8]
 
   const onSquareClick = (squareLocation: string, updatedTreasureCoords) => {
-    if (!guessAvailable) return
+    if (!guessEnabled) return
     onClick(squareLocation, updatedTreasureCoords)
   }
 
@@ -53,9 +54,11 @@ const FogRow: FC<FogRowProps> = ({
           squareLocation
         )
 
-        const updatedTreasureCoords = treasureCoords.filter((coord) => {
-          return `${coord.x}${coord.y}` !== squareLocation
-        })
+        const updatedTreasureCoords = remainingTreasureCoords.filter(
+          (coord) => {
+            return `${coord.x}${coord.y}` !== squareLocation
+          }
+        )
 
         return (
           <Styled.Square
@@ -65,7 +68,7 @@ const FogRow: FC<FogRowProps> = ({
             }}
             isTreasure={isTreasure}
             wasGuessed={wasGuessed}
-            guessAvailable={guessAvailable}
+            guessEnabled={guessEnabled}
           />
         )
       })}

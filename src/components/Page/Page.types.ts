@@ -23,7 +23,7 @@ export interface PageState {
   /**
    * Whether or not the map tiles can be clicked
    * */
-  guessAvailable: boolean
+  guessEnabled: boolean
   /**
    * The current prize pool
    * */

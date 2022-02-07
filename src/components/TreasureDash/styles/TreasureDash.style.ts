@@ -26,6 +26,7 @@ export const GuessButton = styled.button(
       border-style: none;
       background-color: #3caea3;
       color: white;
+      cursor: pointer;
     `
   }
 )

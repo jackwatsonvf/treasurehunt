@@ -8,12 +8,13 @@ import * as Styled from './styles/FogOfWar.style.ts'
 const FogOfWar: FC<FogOfWarProps> = ({
   onClick,
   treasureCoords,
+  remainingTreasureCoords,
   guesses,
-  guessAvailable
+  guessEnabled
 }: FogOfWarProps): ReactElement => {
   const rows = ['a', 'b', 'c', 'd', 'e']
   return (
-    <Styled.FogOfWar>
+    <Styled.FogOfWar guessEnabled={guessEnabled}>
       {rows.map((row, key) => {
         return (
           <FogRow
@@ -22,7 +23,8 @@ const FogOfWar: FC<FogOfWarProps> = ({
             onClick={onClick}
             guesses={guesses}
             treasureCoords={treasureCoords}
-            guessAvailable={guessAvailable}
+            remainingTreasureCoords={remainingTreasureCoords}
+            guessEnabled={guessEnabled}
           />
         )
       })}

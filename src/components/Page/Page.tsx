@@ -18,13 +18,13 @@ export default class Page extends PureComponent<PageProps> {
     guesses: [],
     treasureCoords: [...this.treasureLocations],
     remainingTreasureCoords: [...this.treasureLocations],
-    guessAvailable: false,
+    guessEnabled: false,
     currentPrizePool: 10
   }
 
-  onPaymentCallback = (guessAvailable: boolean, feeToAdd) => {
+  onPaymentCallback = (guessEnabled: boolean, feeToAdd) => {
     this.setState({
-      guessAvailable,
+      guessEnabled,
       currentPrizePool: this.state.currentPrizePool + feeToAdd
     })
   }
@@ -35,7 +35,7 @@ export default class Page extends PureComponent<PageProps> {
   ): void => {
     this.setState({
       guesses: [...this.state.guesses, guess],
-      guessAvailable: false,
+      guessEnabled: false,
       remainingTreasureCoords
     })
   }
@@ -51,8 +51,9 @@ export default class Page extends PureComponent<PageProps> {
         />
         <Map
           onClick={this.onGuessClick}
-          guessAvailable={this.state.guessAvailable}
+          guessEnabled={this.state.guessEnabled}
           treasureCoords={this.state.treasureCoords}
+          remainingTreasureCoords={this.state.remainingTreasureCoords}
           guesses={this.state.guesses}
         />
       </Styled.Page>

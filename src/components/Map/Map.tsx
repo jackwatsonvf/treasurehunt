@@ -4,14 +4,15 @@ import FogOfWar from './components/FogOfWar/index.ts'
 
 import * as Styled from './styles/Map.style.ts'
 
-import mapImage from '../../assets/map.jpeg'
+import mapImage from '../../assets/map.png'
 import { MapProps } from './Map.types'
 
 const Map: FC<MapProps> = ({
   onClick,
   guesses,
   treasureCoords,
-  guessAvailable
+  guessEnabled,
+  remainingTreasureCoords
 }: MapProps): ReactElement => {
   return (
     <Styled.MapContainer>
@@ -19,7 +20,8 @@ const Map: FC<MapProps> = ({
         guesses={guesses}
         treasureCoords={treasureCoords}
         onClick={onClick}
-        guessAvailable={guessAvailable}
+        guessEnabled={guessEnabled}
+        remainingTreasureCoords={remainingTreasureCoords}
       />
       <img alt="treasure map" src={mapImage} />
     </Styled.MapContainer>
