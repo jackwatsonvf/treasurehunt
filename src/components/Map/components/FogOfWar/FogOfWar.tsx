@@ -10,11 +10,11 @@ const FogOfWar: FC<FogOfWarProps> = ({
   treasureCoords,
   remainingTreasureCoords,
   guesses,
-  guessEnabled
+  guessIsActive
 }: FogOfWarProps): ReactElement => {
   const rows = ['a', 'b', 'c', 'd', 'e']
   return (
-    <Styled.FogOfWar guessEnabled={guessEnabled}>
+    <Styled.FogOfWar guessIsActive={guessIsActive}>
       {rows.map((row, key) => {
         return (
           <FogRow
@@ -24,7 +24,7 @@ const FogOfWar: FC<FogOfWarProps> = ({
             guesses={guesses}
             treasureCoords={treasureCoords}
             remainingTreasureCoords={remainingTreasureCoords}
-            guessEnabled={guessEnabled}
+            guessIsActive={guessIsActive}
           />
         )
       })}

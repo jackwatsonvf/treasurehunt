@@ -8,11 +8,12 @@ export const TreasureDash = styled.div((props): FlattenSimpleInterpolation => {
   `
 })
 
-export const Text = styled.h1((props): FlattenSimpleInterpolation => {
+export const Text = styled.h3((props): FlattenSimpleInterpolation => {
   return css`
     display: flex;
     justify-content: center;
     color: white;
+    margin: 10px;
   `
 })
 

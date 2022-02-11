@@ -11,16 +11,16 @@ const Map: FC<MapProps> = ({
   onClick,
   guesses,
   treasureCoords,
-  guessEnabled,
+  guessIsActive,
   remainingTreasureCoords
 }: MapProps): ReactElement => {
   return (
     <Styled.MapContainer>
       <FogOfWar
+        onClick={onClick}
         guesses={guesses}
         treasureCoords={treasureCoords}
-        onClick={onClick}
-        guessEnabled={guessEnabled}
+        guessIsActive={guessIsActive}
         remainingTreasureCoords={remainingTreasureCoords}
       />
       <img alt="treasure map" src={mapImage} />

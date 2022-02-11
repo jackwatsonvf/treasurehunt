@@ -54,12 +54,12 @@ export const Square = styled.button(
         }
       `}
 
-      ${props.guessEnabled &&
+      ${props.guessIsActive &&
       css`
         cursor: url(${shovel}) 20 20, auto;
 
         :hover {
-          background-color: #555;
+          background-color: #fff;
         }
       `}
     `

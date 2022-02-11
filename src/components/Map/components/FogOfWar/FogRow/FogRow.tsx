@@ -4,17 +4,17 @@ import { FogRowProps } from './FogRow.types'
 import * as Styled from './styles/FogRow.style.ts'
 
 const FogRow: FC<FogRowProps> = ({
-  row,
   onClick,
+  row,
   guesses,
   treasureCoords,
   remainingTreasureCoords,
-  guessEnabled
+  guessIsActive
 }: FogRowProps): ReactElement => {
   const squaresPerRow: number[] = [1, 2, 3, 4, 5, 6, 7, 8]
 
   const onSquareClick = (squareLocation: string, updatedTreasureCoords) => {
-    if (!guessEnabled) return
+    if (!guessIsActive) return
     onClick(squareLocation, updatedTreasureCoords)
   }
 
@@ -68,7 +68,7 @@ const FogRow: FC<FogRowProps> = ({
             }}
             isTreasure={isTreasure}
             wasGuessed={wasGuessed}
-            guessEnabled={guessEnabled}
+            guessIsActive={guessIsActive}
           />
         )
       })}

@@ -1,5 +1,15 @@
 import React, { PureComponent, ReactNode } from 'react'
+import { initializeApp } from 'firebase/app'
+import {
+  getFirestore,
+  updateDoc,
+  doc,
+  getDoc,
+  setDoc,
+  onSnapshot
+} from 'firebase/firestore'
 
+import firebaseConfig from '../../firebase.config.ts'
 import TreasureDash from '../TreasureDash/index.ts'
 import Map from '../Map/index.ts'
 
@@ -11,47 +21,102 @@ import { TreasureCoords } from '../helpers/generateTreasureCoordsList/generateTr
 import { PageProps, PageState } from './Page.types'
 
 export default class Page extends PureComponent<PageProps> {
-  // needs to come from server eventually
-  treasureLocations = generateTreasureCoordsList()
-
   state: PageState = {
+    treasureCoords: [],
+    remainingTreasureCoords: [],
     guesses: [],
-    treasureCoords: [...this.treasureLocations],
-    remainingTreasureCoords: [...this.treasureLocations],
-    guessEnabled: false,
-    currentPrizePool: 10
+    guessIsActive: false,
+    guessAvailable: true,
+    prizePool: 0
   }
 
-  onPaymentCallback = (guessEnabled: boolean, feeToAdd) => {
-    this.setState({
-      guessEnabled,
-      currentPrizePool: this.state.currentPrizePool + feeToAdd
+  // firebase setup
+  firebaseApp = initializeApp(firebaseConfig)
+  db = getFirestore()
+
+  // Listens to updates to the database and updates the Page state in real time
+  listenToGameData = () => {
+    onSnapshot(doc(this.db, 'data', 'gameData'), (doc) => {
+      console.log('Current data: ', doc.data())
+
+      if (doc.data() && doc.data().treasureCoords) {
+        const {
+          treasureCoords,
+          remainingTreasureCoords,
+          prizePool,
+          guesses,
+          guessAvailable,
+          guessIsActive
+        } = doc.data()
+        this.setState({
+          treasureCoords,
+          remainingTreasureCoords,
+          prizePool,
+          guessAvailable,
+          guessIsActive,
+          guesses
+        })
+      }
     })
   }
 
-  onGuessClick = (
+  // Provisions the initial gameData to the database
+  initGameData = async () => {
+    const treasureCoords = generateTreasureCoordsList()
+    try {
+      await setDoc(doc(this.db, 'data', 'gameData'), {
+        treasureCoords,
+        remainingTreasureCoords: treasureCoords,
+        guessIsActive: false,
+        guesses: [],
+        prizePool: 10,
+        guessAvailable: true
+      })
+    } catch (e) {
+      console.error('Error initialising treasureCoords: ', e)
+    }
+  }
+
+  // Checks if any gameData exists in the db and if not provisions it
+  fetchGameData = async () => {
+    const dataQuery = await getDoc(doc(this.db, 'data', 'gameData'))
+    if (!dataQuery.data() || !dataQuery.data().treasureCoords) {
+      await this.initGameData()
+    }
+  }
+
+  componentDidMount(): void {
+    this.listenToGameData()
+    this.fetchGameData()
+  }
+
+  onGuessClick = async (
     guess: string,
     remainingTreasureCoords: TreasureCoords
-  ): void => {
-    this.setState({
+  ): Promise<void> => {
+    const gameData = doc(this.db, 'data', 'gameData')
+
+    await updateDoc(gameData, {
       guesses: [...this.state.guesses, guess],
-      guessEnabled: false,
+      guessIsActive: false,
+      guessAvailable: true,
       remainingTreasureCoords
     })
   }
 
   render(): ReactNode {
-    console.log(this.state)
+    console.log('page state', this.state)
     return (
       <Styled.Page id={this.props.id}>
         <TreasureDash
-          onPaymentCallback={this.onPaymentCallback}
-          currentPrizePool={this.state.currentPrizePool}
+          guessAvailable={this.state.guessAvailable}
+          guessIsActive={this.state.guessIsActive}
+          prizePool={this.state.prizePool}
           remainingTreasure={this.state.remainingTreasureCoords.length}
         />
         <Map
           onClick={this.onGuessClick}
-          guessEnabled={this.state.guessEnabled}
+          guessIsActive={this.state.guessIsActive}
           treasureCoords={this.state.treasureCoords}
           remainingTreasureCoords={this.state.remainingTreasureCoords}
           guesses={this.state.guesses}
